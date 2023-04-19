@@ -63,7 +63,12 @@
 -- COMMAND ----------
 
 -- TODO
-<FILL-IN>
+CREATE TABLE IF NOT EXISTS beans
+(
+name STRING,
+color STRING,
+grams FLOAT,
+delicious BOOLEAN)
 
 -- COMMAND ----------
 
@@ -107,7 +112,7 @@ INSERT INTO beans VALUES
 -- COMMAND ----------
 
 -- TODO
-<FILL-IN>
+select * from beans
 
 -- COMMAND ----------
 
@@ -120,7 +125,8 @@ INSERT INTO beans VALUES
 -- COMMAND ----------
 
 -- TODO
-<FILL-IN>
+
+insert into beans values 
 ('pinto', 'brown', 1.5, true),
 ('green', 'green', 178.3, true),
 ('beanbag chair', 'white', 40000, false)
@@ -171,7 +177,15 @@ WHERE name = "jelly"
 -- COMMAND ----------
 
 -- TODO
-<FILL-IN>
+update beans
+set grams = 1500
+where name = 'pinto'
+
+-- COMMAND ----------
+
+select *
+from beans
+where name = 'pinto'
 
 -- COMMAND ----------
 
@@ -205,7 +219,13 @@ WHERE name = "jelly"
 -- COMMAND ----------
 
 -- TODO
-<FILL-IN>
+DELETE FROM beans where delicious = True
+
+-- COMMAND ----------
+
+select *
+from beans
+
 
 -- COMMAND ----------
 
@@ -220,6 +240,28 @@ WHERE name = "jelly"
 -- MAGIC %python
 -- MAGIC assert spark.table("beans").filter("delicious=true").count() == 5, "There should be 5 delicious beans in your table"
 -- MAGIC assert spark.table("beans").filter("name='beanbag chair'").count() == 0, "Make sure your logic deletes non-delicious beans"
+
+-- COMMAND ----------
+
+DESCRIBE HISTORY beans
+
+-- COMMAND ----------
+
+-- restore delicious
+RESTORE TABLE beans TO VERSION AS OF 4
+
+-- COMMAND ----------
+
+select * from beans -- wohoo!!! all delicious are back!!
+
+-- COMMAND ----------
+
+-- delete all from table that are NOT delicious
+DELETE FROM beans where delicious = False
+
+-- COMMAND ----------
+
+select * from beans
 
 -- COMMAND ----------
 
@@ -257,7 +299,13 @@ SELECT * FROM new_beans
 -- COMMAND ----------
 
 -- TODO
-<FILL-IN>
+MERGE INTO beans b
+USING new_beans nb
+ON b.color=nb.color and b.name = nb.name
+WHEN MATCHED
+  THEN UPDATE SET b.grams = b.grams + nb.grams
+WHEN NOT MATCHED AND nb.delicious = True
+  THEN insert *
 
 -- COMMAND ----------
 
@@ -283,6 +331,10 @@ SELECT * FROM new_beans
 
 -- COMMAND ----------
 
+select * from beans
+
+-- COMMAND ----------
+
 -- MAGIC %md <i18n value="4a668d7c-e16b-4061-a5b7-1ec732236308"/>
 -- MAGIC 
 -- MAGIC 
@@ -298,7 +350,7 @@ SELECT * FROM new_beans
 -- COMMAND ----------
 
 -- TODO
-<FILL-IN>
+drop table beans
 
 -- COMMAND ----------
 

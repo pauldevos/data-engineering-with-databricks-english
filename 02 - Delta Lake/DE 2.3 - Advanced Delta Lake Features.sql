@@ -39,6 +39,11 @@
 
 -- COMMAND ----------
 
+-- # %python
+-- # dbutils.library.restartPython() 
+
+-- COMMAND ----------
+
 -- MAGIC %run ../Includes/Classroom-Setup-02.3
 
 -- COMMAND ----------
@@ -143,6 +148,12 @@ DESCRIBE DETAIL students
 
 -- COMMAND ----------
 
+-- MAGIC %python
+-- MAGIC 
+-- MAGIC display(dbutils.fs.ls('dbfs:/mnt/dbacademy-users/paul.devos@neudesic.com/data-engineering-with-databricks/database.db/students'))
+
+-- COMMAND ----------
+
 -- MAGIC %md <i18n value="075483eb-7ddd-46ef-bbb1-33ee7005923b"/>
 -- MAGIC 
 -- MAGIC 
@@ -157,7 +168,7 @@ DESCRIBE DETAIL students
 -- COMMAND ----------
 
 -- MAGIC %python
--- MAGIC display(dbutils.fs.ls(f"{DA.paths.user_db}/students/_delta_log"))
+-- MAGIC display(dbutils.fs.ls(f"{DA.paths.user_db}/students/_delta_log/"))
 
 -- COMMAND ----------
 

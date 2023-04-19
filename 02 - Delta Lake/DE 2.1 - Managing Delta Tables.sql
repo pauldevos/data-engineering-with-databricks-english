@@ -59,7 +59,9 @@
 -- COMMAND ----------
 
 CREATE TABLE students
-  (id INT, name STRING, value DOUBLE);
+  (id INT, 
+  name STRING, 
+  value DOUBLE);
 
 -- COMMAND ----------
 
@@ -73,8 +75,8 @@ CREATE TABLE students
 
 -- COMMAND ----------
 
-CREATE TABLE IF NOT EXISTS students 
-  (id INT, name STRING, value DOUBLE)
+CREATE TABLE IF NOT EXISTS STUDENTS 
+(id INT, name string, value double)
 
 -- COMMAND ----------
 
@@ -152,6 +154,12 @@ SELECT * FROM students
 -- MAGIC Updating records provides atomic guarantees as well: we perform a snapshot read of the current version of our table, find all fields that match our **`WHERE`** clause, and then apply the changes as described.
 -- MAGIC 
 -- MAGIC Below, we find all students that have a name starting with the letter **T** and add 1 to the number in their **`value`** column.
+
+-- COMMAND ----------
+
+Select *
+from students
+where name like 'T%'
 
 -- COMMAND ----------
 
@@ -247,6 +255,24 @@ WHEN NOT MATCHED AND u.type = "insert"
 -- MAGIC Note that only 3 records were impacted by our **`MERGE`** statement; one of the records in our updates table did not have a matching **`id`** in the students table but was marked as an **`update`**. Based on our custom logic, we ignored this record rather than inserting it. 
 -- MAGIC 
 -- MAGIC How would you modify the above statement to include unmatched records marked **`update`** in the final **`INSERT`** clause?
+
+-- COMMAND ----------
+
+MERGE INTO students b
+USING updates u
+ON b.id=u.id
+WHEN MATCHED AND u.type = "update"
+  THEN UPDATE SET *
+WHEN MATCHED AND u.type = "delete"
+  THEN DELETE
+WHEN NOT MATCHED AND u.type = "insert"
+  THEN INSERT *
+WHEN NOT MATCHED -- this would meet the condition to insert all unmatched records regardless of 'value'
+  THEN INSERT *
+
+-- COMMAND ----------
+
+Select * from students
 
 -- COMMAND ----------
 
